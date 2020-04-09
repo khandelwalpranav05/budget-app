@@ -13,18 +13,26 @@
 
 			<div class="balance">
 				<div class="title">Balance</div>
-				<div class="value"></div>
+				<div class="value">
+					<small>$</small>0
+				</div>
 			</div>
 
 			<div class="account">
 				<div class="income">
-					<div class="title">Income</div> <div class="income-total"></div>
+					<div class="title">Income</div>
+					<div class="income-total">
+						<small>$</small>0
+					</div>
 				</div>
 
 				<div class="chart"></div>
 
 				<div class="outcome">
-					<div class="title">Outcome</div> <div class="outcome-total"></div>
+					<div class="title">Outcome</div>
+					<div class="outcome-total">
+						<small>$</small>0
+					</div>
 				</div>
 			</div>
 		</div>
@@ -33,20 +41,28 @@
 			<div class="dash-title">Dashboard</div>
 			<div class="toggle">
 				<div class="tab1">Expenses</div>
-				<div class="tab2 active">Income</div>
-				<div class="tab3">All</div>
+				<div class="tab2">Income</div>
+				<div class="tab3 active">All</div>
 			</div>
 
-			<div class="hide" id="expense"></div>
+			<div class="hide" id="expense">
+				<ul class="list"></ul>
 
-			<div id="income">
+				<div class="input">
+					<input type="text" name="title" id="expense-title-input" placeholder="Title">
+					<input type="number" name="amount" id="expense-amount-input" placeholder="$0">
+					<div class="add-expense"><img src="icon/plus.png"></div>
+				</div>
+			</div>
+
+			<div class="hide" id="income">
 				
 				<ul class="list">
-					<li id ='0' class="income">
+					<!-- <li id ='0' class="income">
 						<div class="entry">Salary: $ 1000</div>
 						<div id = "edit"></div>
 						<div id="delete"></div>
-					</li>
+					</li> -->
 				</ul>		
 
 				<div class="input">
@@ -56,11 +72,10 @@
 				</div>
 			</div>
 
-			<div class="hide" id="all"></div>
-
+			<div id="all"></div>
 		</div>
-
 	</div>
 
+	<script type="text/javascript" src="budget.js"></script>
 </body>
 </html>
