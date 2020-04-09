@@ -1,65 +1,52 @@
-/* www.youtube.com/CodeExplained */
+ const balanceEl = document.querySelector(".balance .value");
+const incomeTotalEl = document.querySelector(".income-total");
+const outcomeTotalEl = document.querySelector(".outcome-total");
+const incomeEl = document.querySelector("#income");
+const expenseEl = document.querySelector("#expense");
+const allEl = document.querySelector("#all");
+const incomeList = document.querySelector("#income .list");
+const expenseList = document.querySelector("#expense .list");
+const allList = document.querySelector("#all .list");
 
-const balanceEl = document.querySelector('.balance .value');
-const incomeTotalEl = document.querySelector('.income-total');
-const outcomeTotalEl = document.querySelector('.outcome-total');
+// SELECT BTNS
+const expenseBtn = document.querySelector(".tab1");
+const incomeBtn = document.querySelector(".tab2");
+const allBtn = document.querySelector(".tab3");
 
-// console.log(balanceEl);
-// console.log(incomeTotalEl);
-// console.log(outcomeTotalEl);
-
-const chartEl = document.querySelector('.chart');
-
-const expenseBtn = document.querySelector('.tab1');
-const incomeBtn = document.querySelector('.tab2');
-const allBtn = document.querySelector('.tab3');
-
-// console.log(expenseBtn);
-// console.log(incomeBtn);
-// console.log(allBtn);
-
-const expenseEl = document.querySelector('#expense');
-const incomeEl = document.querySelector('#income');
-const allEl = document.querySelector('#all');
-
-const incomeList = document.querySelector('#income .list'); 
-const expenseList = document.querySelector('#expense .list');
-const allList = document.querySelector('#all .list');
-
-
-const addIncome = document.querySelector('.add-income');
-const incomeTitle = document.getElementById('income-title-input');
-const incomeAmount = document.getElementById('income-amount-input');
-
+// INPUT BTS
 const addExpense = document.querySelector(".add-expense");
 const expenseTitle = document.getElementById("expense-title-input");
 const expenseAmount = document.getElementById("expense-amount-input");
 
+const addIncome = document.querySelector(".add-income");
+const incomeTitle = document.getElementById("income-title-input");
+const incomeAmount = document.getElementById("income-amount-input");
 // Variables
-let ENTRY_LIST = JSON.parse(localStorage.getItem('entry_list')) || [];
+// let ENTRY_LIST = JSON.parse(localStorage.getItem('entry_list')) || [];
+let ENTRY_LIST = [];
 let balance = 0, income = 0, outcome = 0;
 
-expenseBtn.addEventListener('click',function() {
-	active(expenseBtn);
-	inactive([incomeBtn,allBtn]);
-	show(expenseEl);
-	hide([incomeEl,allEl]);
+expenseBtn.addEventListener("click", function(){
+    show(expenseEl);
+    hide( [incomeEl, allEl] );
+    active( expenseBtn );
+    inactive( [incomeBtn, allBtn] );
 });
 
-incomeBtn.addEventListener('click',function(){
-	active(incomeBtn);
-	inactive([expenseBtn,allBtn]);
-	show(incomeEl);
-	hide([expenseEl,allEl]);
+incomeBtn.addEventListener("click", function(){
+    show(incomeEl);
+    hide( [expenseEl, allEl] );
+    active( incomeBtn );
+    inactive( [expenseBtn, allBtn] );
 });
 
-
-allBtn.addEventListener('click',function(){
-	active(allBtn);
-	inactive([expenseBtn,incomeBtn]);
-	show(allEl);
-	hide([incomeEl,expenseEl]);
+allBtn.addEventListener("click", function(){
+    show(allEl);
+    hide( [incomeEl, expenseEl] );
+    active( allBtn );
+    inactive( [incomeBtn, expenseBtn] );
 });
+
 
 function active(element){
 	element.classList.add('active');
@@ -83,14 +70,14 @@ function inactive(elementArray) {
 
 function updateUI() {
 	income = calculateTotal("income",ENTRY_LIST);
-	outcome = calculateTotal("outcome",ENTRY_LIST);
+	outcome = calculateTotal("expense",ENTRY_LIST);
 	balance = Math.abs(calculateBalance(income,outcome));
 
 	let sign = (income>=outcome) ? "$" : "-$";
 
-	balanceEl = `<small></small>${balance}`;
-	incomeTotalEl = `<small>$</small>${income}`
-	outcomeTotalEl = `<small>$</small>${outcomes}`
+	balanceEl.innerHTML = `<small>${sign}</small>${balance}`;
+	incomeTotalEl.innerHTML = `<small>$</small>${income}`
+	outcomeTotalEl.innerHTML = `<small>$</small>${outcome}`
 
 	clearElement([incomeList,expenseList,allList]);
 
@@ -108,31 +95,36 @@ function updateUI() {
 	localStorage.setItem('entry_list',JSON.stringify(ENTRY_LIST));
 }
 
+
+incomeList.addEventListener("click", deleteOrEdit);
+expenseList.addEventListener("click", deleteOrEdit);
+allList.addEventListener("click", deleteOrEdit);
+
 function deleteOrEdit(event) {
 	const targetBtn = event.target;
 
 	const ENTRY = targetBtn.parentNode;
 
-	if(targetBtn.id == 'delete'){
+	if(targetBtn.id == "delete"){
 		deleteEntry(ENTRY);
-	}else if(targetBtn.id=='edit'){
+	}else if(targetBtn.id=="edit"){
 		editEntry(ENTRY);
 	}
 }
 
-function editEntry(ENTRY){
+function editEntry(entry){
 
-	let entry = ENTRY_LIST[ENTRY.id];
+	let ENTRY = ENTRY_LIST[entry.id];
 
 	if(ENTRY.type=='income'){
-		incomeAmount.value = entry.amount;
-		incomeTitle.value = entry.title;
+		incomeAmount.value = ENTRY.amount;
+		incomeTitle.value = ENTRY.title;
 	}else if(ENTRY.type=='expense'){
-		expenseAmount.value = entry.amount;
-		expenseTitle.value = entry.title;
+		expenseAmount.value = ENTRY.amount;
+		expenseTitle.value = ENTRY.title;
 	}
 
-	deleteEntry(ENTRY);
+	deleteEntry(entry);
 }
 
 function deleteEntry(ENTRY){
@@ -142,7 +134,7 @@ function deleteEntry(ENTRY){
 
 function clearElement(elementArray){
 	elementArray.forEach(element => {
-		element.innerHTML = '';
+		element.innerHTML = "";
 	});
 }
 
@@ -169,13 +161,13 @@ addIncome.addEventListener('click',function(){
 	let income = {
 		type:"income",
 		title:incomeTitle.value,
-		amount:parseFloat(incomeAmount.value)
+		amount:parseInt(incomeAmount.value)
 	}
 
 	ENTRY_LIST.push(income);
 
 	updateUI();
-	console.log(ENTRY_LIST);
+	// console.log(ENTRY_LIST);
 	clearInput([incomeTitle,incomeAmount]);
 });
 
@@ -186,7 +178,7 @@ addExpense.addEventListener('click',function(){
 	let expense = {
 		type: "expense",
 		title:expenseTitle.value,
-		amount:parseFloat(expenseAmount.value),
+		amount:parseInt(expenseAmount.value),
 	}
 
 	ENTRY_LIST.push(expense);
@@ -203,13 +195,12 @@ function clearInput(inputArray){
 
 function showEntry(list,id,type,title,amount){
 
-	const entry = `
-					<li id ='${id}' class="${type}">
+	const entry = `<li id ="${id}" class="${type}">
 						<div class="entry">${title}: $ ${amount}</div>
 						<div id = "edit"></div>
 						<div id="delete"></div>
 					</li>`
 
-	const position = 'afterBegin';
+	const position = 'afterbegin';
 	list.insertAdjacentHTML(position,entry);
 }
